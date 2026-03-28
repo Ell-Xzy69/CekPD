@@ -1,15 +1,14 @@
-// Vercel serverless function
 module.exports = (req, res) => {
-  // Set CORS
+  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   
-  // Handle root path
-  if (req.url === '/' || req.url === '') {
+  // Root URL handler
+  if (req.url === '/') {
     res.status(200).send(`
       <!DOCTYPE html>
       <html>
       <head>
-        <title>CEKPD - Running</title>
+        <title>CEKPD</title>
         <style>
           body {
             font-family: system-ui;
@@ -28,15 +27,25 @@ module.exports = (req, res) => {
             text-align: center;
             border: 1px solid #6366f1;
           }
-          h1 { color: #6366f1; }
-          .success { color: #4ade80; font-size: 20px; margin: 20px 0; }
+          h1 { color: #6366f1; font-size: 2rem; }
+          .success { color: #4ade80; font-size: 18px; margin: 20px 0; }
+          .btn {
+            background: #6366f1;
+            padding: 12px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            margin-top: 20px;
+          }
         </style>
       </head>
       <body>
         <div class="card">
           <h1>✅ CEKPD</h1>
-          <div class="success">BERHASIL!</div>
-          <p>API: <a href="/api/health" style="color:#6366f1">/api/health</a></p>
+          <div class="success">DEPLOY SUCCESSFUL!</div>
+          <p>API is running</p>
+          <a href="/api/health" class="btn">Test API →</a>
         </div>
       </body>
       </html>
@@ -44,12 +53,19 @@ module.exports = (req, res) => {
     return;
   }
   
-  // Health check
+  // API health check
   if (req.url === '/api/health') {
-    res.status(200).json({ status: 'ok', message: 'API running' });
+    res.status(200).json({ 
+      status: 'success', 
+      message: 'CEKPD API is running',
+      timestamp: new Date().toISOString()
+    });
     return;
   }
   
-  // 404
-  res.status(404).json({ error: 'Not Found', url: req.url });
+  // 404 for other routes
+  res.status(404).json({ 
+    error: 'Not Found',
+    path: req.url
+  });
 };
